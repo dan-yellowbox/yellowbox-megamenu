@@ -321,49 +321,60 @@ function my_acf_add_local_field_groups() {
 add_action('acf/init', 'my_acf_add_local_field_groups');
 
 // Hook into Theme
-
 function yellowbox_hook_megamenu() {
+  $megamenus = array();
+  $menu_locations = get_nav_menu_locations();
+  $menu_id = $menu_locations['primary-menu'];
+  $primary_menu = wp_get_nav_menu_items($menu_id);
+
+  foreach ( $primary_menu as $nav_item ) {
+    if( $megamenu_id = get_field('megamenu_choice', $nav_item->ID) ) {
+      $megamenus[] = $megamenu_id;
+    }
+  }
+
   $args = array(
-  'post_type' => 'megamenus',
-  'post_status' => 'publish',
-  'posts_per_page' => -1,
-);
+    'post_type' => 'megamenus',
+    'post_status' => 'publish',
+    'posts_per_page' => -1,
+    'post__in' => $megamenus,
+  );
 
-$loop = new WP_Query( $args );
+  $loop = new WP_Query( $args );
 
-while ( $loop->have_posts() ) : $loop->the_post();
-  echo '<section id="megamenu-' . get_the_ID() . '" class="megamenu bg-white py-5 shadow-lg">';
-    echo '<div class="container">';
-      echo '<div class="row">';
-        if( $columns = get_field('columns') ) {
-          foreach( $columns as $column ) {
-            if( $column['type'] == 'links' ) {
-              echo '<div class="col">';
-                echo '<h5 class="fs-6 border-bottom pb-3 mb-4 subheading">' . $column['heading'] . '</h5>';
-                echo '<ul class="list-unstyled mb-0">';
-                  foreach( $column['links'] as $link) {
-                    echo '<li>';
-                      echo '<a href="' . $link['link']['url'] . '" target="' . $link['link']['target'] . '" class="text-decoration-none">' . $link['link']['title'] . '</a>';
-                    echo '</li>';
-                  }
-                echo '</ul>';
-              echo '</div>';
-            } elseif ( $column['type'] == 'card' ) {
-              echo '<div class="col-4 megamenu-card">';
-                echo  '<a href="' . $column['link']['url'] . '" target="' . $column['link']['target'] . '" class="text-decoration-none text-gray">';
-                  echo  wp_get_attachment_image($column['image']['ID'], 'medium', '', array('class'=>'mb-3 w-100'));
-                  echo '<h5 class="fs-6 subheading">' . $column['link']['title'] . '</h5>';
-                  echo ( $column['description'] ? '<p class="small mt-2">' . $column['description'] . '</h5>' : '');
-                echo '</a>';
-              echo '</div>';
+  while ( $loop->have_posts() ) : $loop->the_post();
+    echo '<section id="megamenu-' . get_the_ID() . '" class="megamenu bg-white py-5 shadow-lg">';
+      echo '<div class="container">';
+        echo '<div class="row">';
+          if( $columns = get_field('columns') ) {
+            foreach( $columns as $column ) {
+              if( $column['type'] == 'links' ) {
+                echo '<div class="col">';
+                  echo '<h5 class="fs-6 border-bottom pb-3 mb-4 subheading">' . $column['heading'] . '</h5>';
+                  echo '<ul class="list-unstyled mb-0">';
+                    foreach( $column['links'] as $link) {
+                      echo '<li>';
+                        echo '<a href="' . $link['link']['url'] . '" target="' . $link['link']['target'] . '" class="text-decoration-none">' . $link['link']['title'] . '</a>';
+                      echo '</li>';
+                    }
+                  echo '</ul>';
+                echo '</div>';
+              } elseif ( $column['type'] == 'card' ) {
+                echo '<div class="col-4 megamenu-card">';
+                  echo  '<a href="' . $column['link']['url'] . '" target="' . $column['link']['target'] . '" class="text-decoration-none text-gray">';
+                    echo  wp_get_attachment_image($column['image']['ID'], 'medium', '', array('class'=>'mb-3 w-100'));
+                    echo '<h5 class="fs-6 subheading">' . $column['link']['title'] . '</h5>';
+                    echo ( $column['description'] ? '<p class="small mt-2">' . $column['description'] . '</h5>' : '');
+                  echo '</a>';
+                echo '</div>';
+              }
             }
           }
-        }
+        echo '</div>';
       echo '</div>';
-    echo '</div>';
-  echo '</section>';
-endwhile;
-wp_reset_postdata();
+    echo '</section>';
+  endwhile;
+  wp_reset_postdata();
 }
 add_action('yellowbox_navigation_end', 'yellowbox_hook_megamenu');
 
