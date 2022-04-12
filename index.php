@@ -11,6 +11,12 @@ License URI:  https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain:  ymb-megamenu
 */
 
+// Unhook Megamenu
+// add_action('wp', 'unhook_megamenu');
+// function unhook_megamenu () {
+//   remove_action( 'yellowbox_navigation_end', 'yellowbox_hook_megamenu');
+// }
+
 // Check for Dependencies
 add_action( 'admin_init', 'megamenu_plugin_dependencies' );
 function megamenu_plugin_dependencies() {
