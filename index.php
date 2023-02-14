@@ -100,7 +100,7 @@ function my_acf_add_local_field_groups() {
         'collapsed' => 'field_609d1fb651090',
         'min' => 1,
         'max' => 5,
-        'layout' => 'row',
+        'layout' => 'block',
         'button_label' => 'Add Column',
         'sub_fields' => array(
           array(
@@ -145,10 +145,38 @@ function my_acf_add_local_field_groups() {
               ),
             ),
             'wrapper' => array(
-              'width' => '',
+              'width' => '75%',
               'class' => '',
               'id' => '',
             ),
+            'default_value' => '',
+            'placeholder' => '',
+            'prepend' => '',
+            'append' => '',
+            'maxlength' => '',
+          ),
+          array(
+            'key' => 'field_609d1fb641090',
+            'label' => 'Heading Link',
+            'name' => 'heading_link',
+            'type' => 'link',
+            'instructions' => '',
+            'required' => 0,
+            'conditional_logic' => array(
+              array(
+                array(
+                  'field' => 'field_611652ef3cdd6',
+                  'operator' => '==',
+                  'value' => 'links',
+                ),
+              ),
+            ),
+            'wrapper' => array(
+              'width' => '25%',
+              'class' => '',
+              'id' => '',
+            ),
+            'return_format' => 'array',
             'default_value' => '',
             'placeholder' => '',
             'prepend' => '',
@@ -201,7 +229,7 @@ function my_acf_add_local_field_groups() {
           ),
           array(
             'key' => 'field_611653463cdd8',
-            'label' => 'Link',
+            'label' => 'Heading / Link',
             'name' => 'link',
             'type' => 'link',
             'instructions' => '',
@@ -356,12 +384,18 @@ function yellowbox_hook_megamenu() {
             foreach( $columns as $column ) {
               if( $column['type'] == 'links' ) {
                 echo '<div class="col">';
-                  echo '<h5 class="fs-6 border-bottom pb-3 mb-4 subheading">' . $column['heading'] . '</h5>';
+                  if( $column['heading_link'] ) {
+                    echo '<h5 class="fs-6 border-bottom pb-3 mb-4 subheading"><a href="' . $column['heading_link']['url'] . '" target="' . $column['heading_link']['target'] . '" class="text-decoration-none">' . $column['heading'] . '</a></h5>';
+                  } else {
+                    echo '<h5 class="fs-6 border-bottom pb-3 mb-4 subheading">' . $column['heading'] . '</h5>';
+                  }
                   echo '<ul class="list-unstyled mb-0">';
-                    foreach( $column['links'] as $link) {
-                      echo '<li>';
-                        echo '<a href="' . $link['link']['url'] . '" target="' . $link['link']['target'] . '" class="text-decoration-none">' . $link['link']['title'] . '</a>';
-                      echo '</li>';
+                    if( $column['links'] ) {
+                      foreach( $column['links'] as $link) {
+                        echo '<li>';
+                          echo '<a href="' . $link['link']['url'] . '" target="' . $link['link']['target'] . '" class="text-decoration-none">' . $link['link']['title'] . '</a>';
+                        echo '</li>';
+                      }
                     }
                   echo '</ul>';
                 echo '</div>';
