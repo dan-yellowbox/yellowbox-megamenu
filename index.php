@@ -20,7 +20,7 @@ Text Domain:  ymb-megamenu
 // Check for Dependencies
 add_action( 'admin_init', 'megamenu_plugin_dependencies' );
 function megamenu_plugin_dependencies() {
-  if ( is_admin() && current_user_can( 'activate_plugins' ) &&  !is_plugin_active( 'acf-plugin/acf.php' ) ) {
+  if ( is_admin() && current_user_can( 'activate_plugins' ) &&  ( !is_plugin_active( 'acf-plugin/acf.php' ) && !is_plugin_active( 'advanced-custom-fields-pro/acf.php' ) ) ) {
     add_action( 'admin_notices', 'megamenu_dependencies_notice' );
     deactivate_plugins( plugin_basename( __FILE__ ) );
     if ( isset( $_GET['activate'] ) ) {
